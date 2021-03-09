@@ -1,7 +1,7 @@
 ---
 title: "STA 138: Final Project"
 author: "Aman Singh & Jennifer Li  \namasin@ucdavis.edu  \njdjli@ucdavis.edu  \nUC Davis  \n Instructor: Prabir Burman  "
-date: "3/02/2021"
+date: "3/09/2021"
 output: pdf_document
 header-includes:
   - \usepackage{titling}
