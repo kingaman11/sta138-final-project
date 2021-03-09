@@ -1,0 +1,60 @@
+---
+title: "STA 138: Final Project"
+author: "Aman Singh & Jennifer Li  \namasin@ucdavis.edu  \njdjli@ucdavis.edu  \nUC Davis  \n Instructor: Prabir Burman  "
+date: "3/02/2021"
+output: pdf_document
+header-includes:
+  - \usepackage{titling}
+  - \usepackage{tikz}
+  - \pretitle{\begin{center}}
+  -  \posttitle{\end{center}}
+  -  \usepackage{blindtext}
+---
+\newpage
+\begin{center}
+\LARGE{Question 1: Low Birth Rate}
+\end{center}
+\newpage
+```{r, echo = F}
+#cuttingoffcode
+library(knitr)
+opts_chunk$set(tidy.opts=list(width.cutoff=70),tidy=TRUE)
+```
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+  
+```{r,warning=FALSE,echo=FALSE,results=FALSE,include=FALSE}
+#library & importing data
+library(readxl)
+library(tidyverse)
+baby <- read_excel("baby.xls")
+ischemic <- read_excel("ischemic.xlsx")
+```
+
+```{r,warning=TRUE,echo=FALSE,results=FALSE,message = FALSE,include=TRUE,fig.align="center",out.width="80%"}
+#analysis for question 1
+baby %>%
+  ggplot()+
+  geom_point(mapping = aes(x = age,y = weight,color = smoke))+
+  labs(title = "Age vs Weight",subtitle = "Comparison based on if they smoked or not",x = "Age of Mother",y = "Weight of mother",color = "Smoke",caption = "Graph A")
+```
+
+
+
+
+
+
+
+\circled{I} \textbf{Introduction}
+
+\circled{II} \textbf{Materials and Methods}
+
+\circled{III} \textbf{Results}
+
+\circled{I} \textbf{Conclusion}
+
+\newpage
+\circled{VI} \center{\textbf{Code Appendix}}
+```{r, ref.label=knitr::all_labels(),echo=TRUE,eval=FALSE}
+```
+
