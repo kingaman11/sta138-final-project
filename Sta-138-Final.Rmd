@@ -27,27 +27,40 @@ opts_chunk$set(tidy.opts=list(width.cutoff=70),tidy=TRUE)
 #library & importing data
 library(readxl)
 library(tidyverse)
+library(patchwork)
 baby <- read_excel("baby.xls")
 ischemic <- read_excel("ischemic.xlsx")
 ```
-
-```{r,warning=TRUE,echo=FALSE,results=FALSE,message = FALSE,include=TRUE,fig.align="center",out.width="80%"}
-#analysis for question 1
-baby %>%
-  ggplot()+
-  geom_point(mapping = aes(x = age,y = weight,color = smoke))+
-  labs(title = "Age vs Weight",subtitle = "Comparison based on if they smoked or not",x = "Age of Mother",y = "Weight of mother",color = "Smoke",caption = "Graph A")
-```
-
-
-
-
 
 
 
 \circled{I} \textbf{Introduction}
 
+Smoking has been an huge issue since the $20^{th}$ century. There used to be advertisements all the time on the television where they would show as people having a great time and enjoying life. However, decades later, people found out that smoking lead to cancer and to horrible birth defects. Upon learning this, the government banned ads for smoking and started to limit the exposure of smoking to the public. Even when buying an cigarette, you have to be 18 years old as well as there is a huge caution warning on the box stating that it can lead to various defects in the body. The worst defect that we have seen so far has been when women who are pregnant are smoking at the same time. This can lead to some serious defects to the children and can affect them in the long run. While we do know that, what we want to investigate is whether the fact the probability of low birth weight of infant is related to information on mother such as age, weight smoking status. We will be using the dataset called `Baby` provided by Professor Burman. `Baby` has 7 columns, `age`(age of the mother), `weight`(weight of the mother before pregnancy), `smoke`(smoking status during pregnancy), `pre`(history of pre-mature labor), `hyp`(history of hypertension), `visits`(the number of visits during the first trimester), and `birth`(if the birth weight of the infant was low or not).
+
 \circled{II} \textbf{Materials and Methods}
+
+
+
+```{r,warning=TRUE,echo=FALSE,results=FALSE,message = FALSE,include=TRUE,fig.align="center",out.width="90%"}
+#analysis for question 1
+p = baby %>%
+  ggplot()+
+  geom_point(mapping = aes(x = age,y = weight,color = birth,shape = smoke))+
+  labs(title = "Age vs Weight",subtitle = "Comparison based on if they smoked or not",x = "Age of Mother",y = "Weight of mother",color = "Birth",caption = "Graph A",shape = "Smoke")
+
+b = baby %>%
+  ggplot(aes(age, weight)) + 
+  geom_point()+
+  facet_grid(vars(birth),vars(smoke))+
+  labs(title = "Age vs Weight",subtitle = "Individual graphs for simplisticity",x = "Age of Mother",y = "Weight of mother",caption = "Graph B")
+
+p + b
+```
+
+
+
+
 
 \circled{III} \textbf{Results}
 
