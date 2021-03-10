@@ -29,14 +29,13 @@ library(readxl)
 library(tidyverse)
 library(patchwork)
 baby <- read_excel("baby.xls")
-ischemic <- read_excel("ischemic.xlsx")
 ```
 
 
 
 \circled{I} \textbf{Introduction}
 
-Smoking has been an huge issue since the $20^{th}$ century. There used to be advertisements all the time on the television where they would show as people having a great time and enjoying life. However, decades later, people found out that smoking lead to cancer and to horrible birth defects. Upon learning this, the government banned ads for smoking and started to limit the exposure of smoking to the public. Even when buying an cigarette, you have to be 18 years old as well as there is a huge caution warning on the box stating that it can lead to various defects in the body. The worst defect that we have seen so far has been when women who are pregnant are smoking at the same time. This can lead to some serious defects to the children and can affect them in the long run. While we do know that, what we want to investigate is whether the fact the probability of low birth weight of infant is related to information on mother such as age, weight smoking status. We will be using the dataset called `Baby` provided by Professor Burman. `Baby` has 7 columns, `age`(age of the mother), `weight`(weight of the mother before pregnancy), `smoke`(smoking status during pregnancy), `pre`(history of pre-mature labor), `hyp`(history of hypertension), `visits`(the number of visits during the first trimester), and `birth`(if the birth weight of the infant was low or not).
+Smoking has been an huge issue since the $20^{th}$ century. There used to be advertisements all the time on the television where they would show as people having a great time and enjoying life. However, decades later, people found out that smoking lead to cancer and to horrible birth defects. Upon learning this, the government banned ads for smoking and started to limit the exposure of smoking to the public. Even when buying an cigarette, you have to be 18 years old as well as there is a huge caution warning on the box stating that it can lead to various defects in the body. The worst defect that we have seen so far has been when women who are pregnant are smoking at the same time. This can lead to some serious defects to the children and can affect them in the long run. While we do know that, what we want to investigate is whether the fact the probability of low birth weight of infant is related to information on mother such as age, weight smoking status. We will be using the dataset called `Baby` provided by Professor Prabir Burman. `Baby` has 7 columns, `age`(age of the mother), `weight`(weight of the mother before pregnancy), `smoke`(smoking status during pregnancy), `pre`(history of pre-mature labor), `hyp`(history of hypertension), `visits`(the number of visits during the first trimester), and `birth`(if the birth weight of the infant was low or not).
 
 \circled{II} \textbf{Materials and Methods}
 
@@ -64,10 +63,31 @@ p + b
 
 \circled{III} \textbf{Results}
 
-\circled{I} \textbf{Conclusion}
+\circled{IV} \textbf{Conclusion}
 
 \newpage
-\circled{VI} \center{\textbf{Code Appendix}}
+\begin{center}
+\LARGE{Question 2: Ischemic heart disease}
+\end{center}
+
+\newpage
+\circled{I} \textbf{Introduction}
+
+Heart disease is one of the most common diseases which can lead to death. It is in fact an very serious disease and is an type of disease which starts off by having an buildup of plaque. This leads to the coronary arteries thus having to narrow, which limits the blood flow to the heart. Some symptoms of coronary artery disease can really range from no symptoms, to chest pain and even an heart attack depending on the person. Some treatment can help but ultimately there is no cure and would have to deal with for the rest of your life. In this paper, we are looking into an dataset called `ischemic` given to us by Professor Prabir Burman which contains 9 columns. The 9 columns are `cost`(the total cost of claims made by the subscriber), `age`(age of the subscriber), `gender`(gender of subscriber),`inter`(total number of interventions or procedures carried out),`drugs`(number of tracked drugs prescribed), `complications`(number of other complications that came from the heart treatment), `comorbidities` (number of other diseases that the subscriber had during the period), `duration` (number of days of duration of treatment condition), and `visits` (number of emergency room visits). We will be using this dataset to perform an poisson regression that will perform an data summary, goodness-of-fit and model selection to model the mean as an function of 8 other variables.
+
+\circled{II} \textbf{Materials and Methods}
+
+```{r,warning=FALSE,echo=FALSE,results=FALSE,include=FALSE}
+#Question 2
+ischemic <- read_excel("ischemic.xlsx")
+```
+
+\circled{III} \textbf{Results}
+
+\circled{IV} \textbf{Conclusion}
+
+\newpage
+\circled{V} \center{\textbf{Code Appendix}}
 ```{r, ref.label=knitr::all_labels(),echo=TRUE,eval=FALSE}
 ```
 
