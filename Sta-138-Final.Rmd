@@ -1,6 +1,6 @@
 ---
 title: "STA 138: Final Project"
-author: "Aman Singh & Jennifer Li  \n915763034  \nJenny ID  \nUC Davis  \n Instructor: Prabir Burman  "
+author: "Aman Singh & Jennifer Li  \nID:915763034  \nID:999339769  \nUC Davis  \n Instructor: Prabir Burman  "
 date: "3/09/2021"
 output: pdf_document
 header-includes:
@@ -40,7 +40,6 @@ Smoking has been an huge issue since the $20^{th}$ century. There used to be adv
 \circled{II} \textbf{Materials and Methods}
 
 
-
 ```{r,warning=TRUE,echo=FALSE,results=FALSE,message = FALSE,include=TRUE,fig.align="center",out.width="90%"}
 #analysis for question 1
 p = baby %>%
@@ -57,6 +56,9 @@ b = baby %>%
 p + b
 ```
 
+```{r}
+
+```
 
 
 
