@@ -57,7 +57,7 @@ p + b
 ```
 
 ```{r}
-
+x = glm(birth~age+weight+factor(smoke)+factor(pre)+factor(hyp)+visits+age:weight+weight:factor(pre)+weight:factor(hyp),data=baby,family=binomial);x
 ```
 
 
@@ -87,13 +87,13 @@ ischemic <- read_excel("ischemic.xlsx")
 a = ischemic %>%
   ggplot()+
   geom_point(mapping = aes(x = age,y = cost,color = gender))+
-  labs(title = "Age vs Cost",subtitle = "Sub. vs Claims",x = "Age of subscriber",y = "Total cost of claims",color = "Gender",caption = "Graph B",shape = "Smoke")
+  labs(title = "Age vs Cost",subtitle = "Sub. vs Claims",x = "Age of subscriber",y = "Total cost of claims",color = "Gender",caption = "Graph C",shape = "Smoke")
 
 b = ischemic %>%
   ggplot(aes(age, cost)) + 
   geom_point()+
   facet_grid(vars(gender))+
-  labs(title = "Age vs Cost",subtitle = "Seperated by gender",x = "Age of subscriber",y = "Total cost of claims",caption = "Graph B")
+  labs(title = "Age vs Cost",subtitle = "Seperated by gender",x = "Age of subscriber",y = "Total cost of claims",caption = "Graph D")
 
 
 a+b
