@@ -28,6 +28,7 @@ opts_chunk$set(tidy.opts=list(width.cutoff=70),tidy=TRUE)
 library(readxl)
 library(tidyverse)
 library(patchwork)
+library(MASS)
 baby <- read_excel("baby.xls")
 ```
 
@@ -39,6 +40,26 @@ Smoking has been an huge issue since the $20^{th}$ century. There used to be adv
 
 \circled{II} \textbf{Materials and Methods}
 
+```{r,warning=FALSE,echo=FALSE,results=FALSE,include=FALSE}
+summary(baby)
+```
+
+\begin{table}[ht]
+\centering
+\caption{Summary Statistics}
+\begin{tabular}[t]{lcccc}
+\hline
+& \textbf{Age} & \textbf{Weight} & \textbf{Visits} & \textbf{Birth}\\
+\hline
+\textbf{Min:} & 14 & 80 & 0 & 0\\
+\textbf{1st Qt.:} & 19 & 110 & 0 & 0\\
+\textbf{Median:} & 23 & 121 & 0 & 1\\
+\textbf{Mean:} & 23.24 & 129.8 & .7937 & .6878\\ 
+\textbf{3rd Qt:} & 26 & 140 & 1 & 1\\ 
+\textbf{Max:} & 45 & 250 & 6 & 1\\ 
+\hline
+\end{tabular}
+\end{table}
 
 ```{r,warning=TRUE,echo=FALSE,results=FALSE,message = FALSE,include=TRUE,fig.align="center",out.width="90%"}
 #analysis for question 1
@@ -56,16 +77,175 @@ b = baby %>%
 p + b
 ```
 
-```{r}
-x = glm(birth~age+weight+factor(smoke)+factor(pre)+factor(hyp)+visits+age:weight+weight:factor(pre)+weight:factor(hyp),data=baby,family=binomial);x
-```
-
-
-
+We notice right away from the summary of the table that there seems to be multiple binomial variables in this dataset. We see that `smoke`, `pre`, and `hyp` are all categorical variables with the 2 levels being `yes` or `no`. We wanted to make an way so we can start off with an regular logistic regression without any transformations or any interaction terms. What we will do next is to compare it to an interaction regression. We will than use an Goodness-of-Fit test to see if we can eliminate any variables and than proceed to use an step-wise regression to confirm if our regression is valid. We will than use that final regression to predict the birth column of the `Baby` dataset. After that we will compare our model with the dataset and see how accurate our model was.
 
 \circled{III} \textbf{Results}
 
+We also made the categorical variables (`Smoke`,`Pre`,`Hyp`) an factor to accurately account for the response. The regression we started off with is the following:
+
+$$Birth = Age + Weight + Factor(Smoke) + Factor(Pre) + Factor(Hyp) + Visits+ \epsilon_t$$
+
+```{r,warning=FALSE,echo=FALSE,results=FALSE,include=FALSE}
+z = glm(birth~age+weight+factor(smoke)+factor(pre)+factor(hyp)+visits,data=baby,family="binomial")
+summary(z)
+```
+\begin{table}[ht]
+\centering
+\caption{Logistic Regression 1 Results:}
+\begin{tabular}[t]{lcccc}
+\hline
+& \textbf{Estimate} & \textbf{Standard Error} & \textbf{Z-Value} & \textbf{P.Value}\\
+\hline
+\textbf{Intercept:} & -2.021488  & 1.113152 &  -1.816 & 0.06937\\
+\textbf{Age:} & 0.059091 &  0.036965  & 1.599 & 0.10992\\
+\textbf{Weight:} & 0.016086  & 0.006943 &  2.317 & 0.02051\\
+\textbf{factor.smoke.yes:} & -0.513740 &  0.349295 & -1.471 & 0.14135\\ 
+\textbf{factor.pre.yes:} & -1.798908 &  0.510014 & -3.527 & 0.00042\\ 
+\textbf{factor.hyp.yes:} & -1.772643  & 0.717756 & -2.470 & 0.01352\\ 
+\textbf{Visits:} & 0.032113 &  0.178906 &  0.179 & 0.85755\\ 
+\hline
+\end{tabular}
+\bigskip
+
+Null deviance: 234.67  on 188  degrees of freedom
+
+Residual deviance: 202.15  on 182  degrees of freedom
+
+AIC: 216.15
+\end{table}
+
+ANALYSIS FOR FIRST RESULT HERE: We see here that the factor.smoke.yes, factor.pre.yes,and factor.hyp.yes all are accounted in the regression if the mother smokes,has a history of pre-mature labor, and has an history of hypertension. 
+
+
+We than try out an regression including the interaction terms stated in the problem. We add Weight & Pre together, Age & Weight together, and Weight & Hyp. We build an logistic regression that looks like the following:
+```{r,warning=FALSE,echo=FALSE,results=FALSE,include=FALSE}
+x = glm(birth~age+weight+factor(smoke)+factor(pre)+factor(hyp)+visits+age:weight+weight:factor(pre)+weight:factor(hyp),data=baby,family="binomial")
+summary(x)
+```
+$Birth = Age + Weight + Factor(Smoke) + Factor(Pre) + Factor(Hyp) + Visits + Age:Weight + Weight:Factor(Pre) + Weight:Factor(Hyp)+ \epsilon_t$
+
+\begin{table}[ht]
+\centering
+\caption{Logistic Regression 2 Results:}
+\begin{tabular}[t]{lcccc}
+\hline
+& \textbf{Estimate} & \textbf{Standard Error} & \textbf{Z-Value} & \textbf{P.Value}\\
+\hline
+\textbf{Intercept:} & -3.2742473 & 3.9295522 & -0.833 & 0.405\\
+\textbf{Age:} & 0.1165393 & 0.1682394 &  0.693 & 0.488\\
+\textbf{Weight:} & 0.0258898 & 0.0304761 &  0.850  &  0.396\\
+\textbf{factor.smoke.yes:} & -0.5087686 & 0.3545077 & -1.435  & 0.151\\ 
+\textbf{factor.pre.yes:} & -2.6303649 & 2.8680721 & -0.917  &  0.359\\ 
+\textbf{factor.hyp.yes:} & -1.6168753 & 2.6785514 & -0.604  &  0.546\\
+\textbf{Visits:} & 0.0292054 & 0.1802465 &  0.162 &  0.871\\ 
+\textbf{age:weight} & -0.0004465 & 0.0012718 & -0.351 & 0.726\\
+\textbf{weight:factor(pre)yes} & 0.0064942 & 0.0222361  & 0.292  &  0.770\\
+\textbf{weight:factor(hyp)yes} & -0.0009711 & 0.0171863 & -0.057 &  0.955\\
+\hline
+\end{tabular}
+\bigskip
+
+Null deviance: 234.67  on 188  degrees of freedom
+
+Residual deviance: 201.96  on 179  degrees of freedom
+
+AIC: 221.96
+\end{table}
+
+We immediately notice between the 2 regressions is that the AIC immediately increases between the 2 regressions. This is not a good look, which seems to be that we would have to drop some variables to lower the AIC. The AIC is basically an mathematical method to evaluate how well an model fits the data. We also notice that the Residual deviance goes down which means that we should also look at smaller variables in the regression. 
+
+We initially decided to try out an Goodness-of-Fit test on this data using categorical data, however we saw that the data doesn't seem to be good because the `age` variable is very widely dispersed as well as the `weight` variable leading us to perform the Likelihood ratio test instead.We than decide to carry out an likelihood ratio test to decide if we should drop the interaction terms. We will than reject or FTR based off the following hypothesis:
+
+$$H_0: B_{age:weight+weight:factor(pre)+weight:factor(hyp)} = 0$$
+$$H_A: B_{age:weight+weight:factor(pre)+weight:factor(hyp)} \ne 0$$
+
+```{r,warning=FALSE,echo=FALSE,results=FALSE,include=FALSE}
+fit_full=glm(birth~age+weight+factor(smoke)+factor(pre)+factor(hyp)+visits+age:weight+weight:factor(pre)+weight:factor(hyp),data=baby,family="binomial")
+fit_reduced=glm(birth~age+weight+factor(smoke)+factor(pre)+factor(hyp)+visits,data=baby,family="binomial")
+G2=fit_reduced$deviance-fit_full$deviance
+1-pchisq(G2,df=3)
+```
+
+As we can see testing the full model compared to the reduced, since the p-value is `.9789857`, we end up dropping the interaction variables as they do not provide any use to us. I also believe that we should test one more time for the variable `visits` as it doesn't seem to be that important of an variable. We use the following hypothesis test:
+
+$$H_0: B_{visits} = 0$$
+
+$$H_A: B_{visits} \ne 0$$
+
+
+```{r,warning=FALSE,echo=FALSE,results=FALSE,include=FALSE}
+fit_full=glm(birth~age+weight+factor(smoke)+factor(pre)+factor(hyp)+visits,data=baby,family="binomial")
+fit_reduced=glm(birth~age+weight+factor(smoke)+factor(pre)+factor(hyp),data=baby,family="binomial")
+G2=fit_reduced$deviance-fit_full$deviance
+1-pchisq(G2,df=1)
+```
+
+We also see that since the P-value is `.8572994`, we also fail to reject the Null Hypothesis which lets us drop the variable from the regression. 
+
+We will now use Step-Wise regression to see if the model that we fit and tested is accurate to the Step-Wise Regression fit, which uses the AIC values to calculate best fit. The backward model starts with the full model and goes to the null model to analyze best fit, while the forward model starts with the null model and goes to the full model. We will use both of them combined just for better analyzation.
+
+```{r,warning=FALSE,echo=FALSE,results=FALSE,include=FALSE}
+step.model <- stepAIC(x, direction = "both", trace = FALSE)
+summary(step.model)
+```
+
+We notice that the Front/Backward Step-wise regression function also provided the same regression as what we originally thought it was with all the interactions dropped as well as the variable `visits`. Our final regression looks like:
+
+$$Birth = Age + Weight + Factor(Smoke) + Factor(Pre) + Factor(Hyp) + \epsilon_t$$
+with the summary statistics being:
+```{r,warning=FALSE,echo=FALSE,results=FALSE,include=FALSE}
+final= glm(formula = birth ~ age + weight + factor(smoke) + factor(pre) + factor(hyp), family = "binomial", data = baby)
+
+summary(final)
+```
+
+\begin{table}[ht]
+\centering
+\caption{Logistic Regression 2 Results:}
+\begin{tabular}[t]{lcccc}
+\hline
+& \textbf{Estimate} & \textbf{Standard Error} & \textbf{Z-Value} & \textbf{P.Value}\\
+\hline
+\textbf{Intercept:} & -3.2742473 & 3.9295522 & -0.833 & 0.405\\
+\textbf{Age:} & 0.1165393 & 0.1682394 &  0.693 & 0.488\\
+\textbf{Weight:} & 0.0258898 & 0.0304761 &  0.850  &  0.396\\
+\textbf{factor.smoke.yes:} & -0.5087686 & 0.3545077 & -1.435  & 0.151\\ 
+\textbf{factor.pre.yes:} & -2.6303649 & 2.8680721 & -0.917  &  0.359\\ 
+\textbf{factor.hyp.yes} & -1.782710 &  0.716698 & -2.487 & 0.012868\\
+\hline
+\end{tabular}
+\bigskip
+
+Null deviance: 234.67  on 188  degrees of freedom
+
+Residual deviance: 202.19  on 183  degrees of freedom
+
+AIC: 214.19
+\end{table}
+
+Comparing the last 3 regressions, we notice that this is the best fit model that we have tried so far. The reasons being that the AIC is at its lowest. ADD A BIT MORE ANALYSIS HERE!!!!
+
+
+Using this final regression, we will than try to approximate our results by making an test dataset which has all the same variables as the `Baby` dataset except for the response variable being Birth. We will than compare our results to the real world data to see how accurate our model is. 
+
+```{r,warning=FALSE,echo=FALSE,results=FALSE,include=FALSE}
+test <- data.frame(
+  baby[1:189,1:6]
+)
+prediction = predict(final,test,type = "response")
+lol = ifelse(prediction > .5,1,0)
+cbind(prediction,lol,baby$birth)
+cool = lol == baby$birth
+length(cool[cool==TRUE])
+```
+
+We made our column into an logical class where it displayed true if the prediction was equal to the Birth column in `Baby` and we found the length of the True which ended up being $\frac{141}{189} = 74.6\%$. This means our model accurately explains 74.6% of the data in the `Baby` dataset.
+
+
 \circled{IV} \textbf{Conclusion}
+
+Seeing that our data accurately predicted 74.6% of the data in the dataset, we think that its an result of an pretty accurate and good model. It is possible to increase the validity and accuracy of this model maybe if we added transformations and of course other variables such as whether they attended college, if there parents smoked, etc. While our model works pretty well on this dataset, it remains to be seen if it can do the same on another dataset with different variables. Another reasoning behind the predictability of it being 74.6% is largely because of outside influences on people. Everyone is different and are not bound by the variables described in the dataset. Thus, no model can 100% accurately describe an dataset, thus describing the error term at the end of an regression, $\epsilon_t$.
+
 
 \newpage
 \begin{center}
