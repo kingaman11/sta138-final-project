@@ -81,7 +81,7 @@ We notice right away from the summary of the table that there seems to be multip
 
 \circled{III} \textbf{Results}
 
-We also made the categorical variables (`Smoke`,`Pre`,`Hyp`) an factor to accurately account for the response. The regression we started off with is the following:
+We made the categorical variables (`Smoke`,`Pre`,`Hyp`) an factor to accurately account for the response. The regression we started off with is the following:
 
 $$Birth = Age + Weight + Factor(Smoke) + Factor(Pre) + Factor(Hyp) + Visits+ \epsilon_t$$
 
@@ -113,7 +113,6 @@ Residual deviance: 202.15  on 182  degrees of freedom
 
 AIC: 216.15
 \end{table}
-
 ANALYSIS FOR FIRST RESULT HERE: We see here that the factor.smoke.yes, factor.pre.yes,and factor.hyp.yes all are accounted in the regression if the mother smokes,has a history of pre-mature labor, and has an history of hypertension. 
 
 
@@ -151,7 +150,7 @@ Residual deviance: 201.96  on 179  degrees of freedom
 
 AIC: 221.96
 \end{table}
-
+\newpage
 We immediately notice between the 2 regressions is that the AIC immediately increases between the 2 regressions. This is not a good look, which seems to be that we would have to drop some variables to lower the AIC. The AIC is basically an mathematical method to evaluate how well an model fits the data. We also notice that the Residual deviance goes down which means that we should also look at smaller variables in the regression. 
 
 We initially decided to try out an Goodness-of-Fit test on this data using categorical data, however we saw that the data doesn't seem to be good because the `age` variable is very widely dispersed as well as the `weight` variable leading us to perform the Likelihood ratio test instead.We than decide to carry out an likelihood ratio test to decide if we should drop the interaction terms. We will than reject or FTR based off the following hypothesis:
@@ -201,7 +200,7 @@ summary(final)
 
 \begin{table}[ht]
 \centering
-\caption{Logistic Regression 2 Results:}
+\caption{Logistic Regression 3 Results:}
 \begin{tabular}[t]{lcccc}
 \hline
 & \textbf{Estimate} & \textbf{Standard Error} & \textbf{Z-Value} & \textbf{P.Value}\\
