@@ -5,7 +5,7 @@ We will be working with 2 datasets, baby and ischemic.
 
 For the first dataset baby:
 
-The goal is to investigate if the probability of low birth weight of infant is related to information on mother such as age, weight smoking status etc. The response variable is birth with values 1 (low birth weight), 0 (no low birth weight). We have to figure out how to use logistic regression to perform data summary, goodness-of-fit, and model selection. We than use the final model to estimate the percentage of correct classification.
+The goal is to investigate if the probability of low birth weight of infant is related to information on mother such as age, weight smoking status etc. The response variable is birth with values 1 (low birth weight), 0 (no low birth weight). We have to figure out how to use logistic regression to perform data summary, goodness-of-fit, and model selection. We than use the final model to estimate the percentage of correct classification. Our model came out to be 76% accurate for in the dataset accuracy. While the goal was to only determine the accuracy of in the dataset, it remains to be seen how accurate this model can be using other data not included in the dataset.
 
 
 For the second dataset ischemic:
