@@ -1,5 +1,6 @@
 # Statistics 138 Final Project
 
+We were assigned this project by our professor for STA 138. Jenny and I chose to become partners to work together.
 
 We will be working with 2 datasets, baby and ischemic. 
 
