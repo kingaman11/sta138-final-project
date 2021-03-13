@@ -36,7 +36,7 @@ baby <- read_excel("baby.xls")
 
 \circled{I} \textbf{Introduction}
 
-Smoking has been an huge issue since the $20^{th}$ century. There used to be advertisements all the time on the television where they would show as people having a great time and enjoying life. However, decades later, people found out that smoking lead to cancer and to horrible birth defects. Upon learning this, the government banned ads for smoking and started to limit the exposure of smoking to the public. Even when buying an cigarette, you have to be 18 years old as well as there is a huge caution warning on the box stating that it can lead to various defects in the body. The worst defect that we have seen so far has been when women who are pregnant are smoking at the same time. This can lead to some serious defects to the children and can affect them in the long run. While we do know that, what we want to investigate is whether the fact the probability of low birth weight of infant is related to information on mother such as age, weight smoking status. We will be using the dataset called `Baby` provided by Professor Prabir Burman. `Baby` has 7 columns, `age`(age of the mother), `weight`(weight of the mother before pregnancy), `smoke`(smoking status during pregnancy), `pre`(history of pre-mature labor), `hyp`(history of hypertension), `visits`(the number of visits during the first trimester), and `birth`(if the birth weight of the infant was low or not).
+Smoking has been a huge issue since the $20^{th}$ century. There used to be advertisements all the time on the television where they would show as people having a great time and enjoying life. However, decades later, people found out that smoking leads to cancer and to horrible birth defects. Upon learning this, the government banned ads for smoking and started to limit the exposure of smoking to the public. Even when buying a cigarette, you have to be 18 years old as well as there is a huge caution warning on the box stating that it can lead to various defects in the body. The worst defect that we have seen so far has been when women who are pregnant are smoking at the same time. This can lead to some serious defects to the children and can affect them in the long run. While we do know that, what we want to investigate is whether the probability of low birth weight of infants is related to information on mother such as age, weight smoking status. We will be using the dataset called `Baby` provided by Professor Prabir Burman. `Baby` has 7 columns, `age`(age of the mother), `weight`(weight of the mother before pregnancy), `smoke`(smoking status during pregnancy), `pre`(history of premature labor), `hyp`(history of hypertension), `visits`(the number of visits during the first trimester), and `birth`(if the birth weight of the infant was low or not).
 
 \circled{II} \textbf{Materials and Methods}
 
@@ -77,7 +77,7 @@ b = baby %>%
 p + b
 ```
 
-We notice right away from the summary of the table that there seems to be multiple binomial variables in this dataset. We see that `smoke`, `pre`, and `hyp` are all categorical variables with the 2 levels being `yes` or `no`. We wanted to make an way so we can start off with an regular logistic regression without any transformations or any interaction terms. What we will do next is to compare it to an interaction regression. We will than use an Goodness-of-Fit test to see if we can eliminate any variables and than proceed to use an step-wise regression to confirm if our regression is valid. We will than use that final regression to predict the birth column of the `Baby` dataset. After that we will compare our model with the dataset and see how accurate our model was.
+We notice right away from the summary of the table that there seems to be multiple binomial variables in this dataset. We see that `smoke`, `pre`, and `hyp` are all categorical variables with the 2 levels being `yes` or `no`. We wanted to make a way so we can start off with a regular logistic regression without any transformations or any interaction terms. What we will do next is to compare it to an interaction regression. We will then use an Goodness-of-Fit test to see if we can eliminate any variables and then proceed to use an stepwise regression to confirm if our regression is valid. We will then use that final regression to predict the birth column of the `Baby` dataset. After that we will compare our model with the dataset and see how accurate our model was.
 
 \circled{III} \textbf{Results}
 
@@ -113,8 +113,7 @@ Residual deviance: 202.15  on 182  degrees of freedom
 
 AIC: 216.15
 \end{table}
-ANALYSIS FOR FIRST RESULT HERE: We see here that the factor.smoke.yes, factor.pre.yes,and factor.hyp.yes all are accounted in the regression if the mother smokes,has a history of pre-mature labor, and has an history of hypertension. 
-
+Based on the rule of thumb, we see that `Weight`,`factor.pre.yes`,`factor.hyp.yes`, all seem to be statistically significant. We see here that the factor.smoke.yes, factor.pre.yes,and factor.hyp.yes all are accounted in the regression if the mother smokes,has a history of pre-mature labor, and has an history of hypertension. 
 
 We than try out an regression including the interaction terms stated in the problem. We add Weight & Pre together, Age & Weight together, and Weight & Hyp. We build an logistic regression that looks like the following:
 ```{r,warning=FALSE,echo=FALSE,results=FALSE,include=FALSE}
@@ -151,9 +150,9 @@ Residual deviance: 201.96  on 179  degrees of freedom
 AIC: 221.96
 \end{table}
 \newpage
-We immediately notice between the 2 regressions is that the AIC immediately increases between the 2 regressions. This is not a good look, which seems to be that we would have to drop some variables to lower the AIC. The AIC is basically an mathematical method to evaluate how well an model fits the data. We also notice that the Residual deviance goes down which means that we should also look at smaller variables in the regression. 
+We immediately notice between the 2 regressions is that the AIC immediately increases between the 2 regressions.This is not a good look, which seems to be that we would have to drop some variables to lower the AIC. The AIC is basically an mathematical method to evaluate how well an model fits the data. We also notice that the Residual deviance goes down which means that we should also look at smaller variables in the regression. We also see that none of the variable are statistically significant. 
 
-We initially decided to try out an Goodness-of-Fit test on this data using categorical data, however we saw that the data doesn't seem to be good because the `age` variable is very widely dispersed as well as the `weight` variable leading us to perform the Likelihood ratio test instead.We than decide to carry out an likelihood ratio test to decide if we should drop the interaction terms. We will than reject or FTR based off the following hypothesis:
+We initially decided to try out an Goodness-of-Fit test on this data using categorical data, however we saw that the data doesn't seem to be good because the `age` variable is very widely dispersed as well as the `weight` variable leading us to perform the Likelihood ratio test instead.We then decide to carry out an likelihood ratio test to decide if we should drop the interaction terms. We will than reject or fail to reject based off the following hypothesis:
 
 $$H_0: B_{age:weight+weight:factor(pre)+weight:factor(hyp)} = 0$$
 $$H_A: B_{age:weight+weight:factor(pre)+weight:factor(hyp)} \ne 0$$
@@ -165,7 +164,7 @@ G2=fit_reduced$deviance-fit_full$deviance
 1-pchisq(G2,df=3)
 ```
 
-As we can see testing the full model compared to the reduced, since the p-value is `.9789857`, we end up dropping the interaction variables as they do not provide any use to us. I also believe that we should test one more time for the variable `visits` as it doesn't seem to be that important of an variable. We use the following hypothesis test:
+As we can see testing the full model with the interactions compared to the reduced model, since the p-value is `.9789857`, we end up dropping the interaction variables as they do not provide any use to us. I also believe that we should test one more time for the variable `visits` as it doesn't seem to be that important of a variable. We use the following likelihood ratio hypothesis test:
 
 $$H_0: B_{visits} = 0$$
 
@@ -179,16 +178,16 @@ G2=fit_reduced$deviance-fit_full$deviance
 1-pchisq(G2,df=1)
 ```
 
-We also see that since the P-value is `.8572994`, we also fail to reject the Null Hypothesis which lets us drop the variable from the regression. 
+We also see that since the P-value is `.8572994`, we also fail to reject the Null Hypothesis which lets us drop the variable `visits` from the regression. 
 
-We will now use Step-Wise regression to see if the model that we fit and tested is accurate to the Step-Wise Regression fit, which uses the AIC values to calculate best fit. The backward model starts with the full model and goes to the null model to analyze best fit, while the forward model starts with the null model and goes to the full model. We will use both of them combined just for better analyzation.
+We will now use Stepwise regression to see if the model that we fit and tested is accurate to the Stepwise Regression fit, which uses the AIC values to calculate best fit. The backward model starts with the full model and goes to the null model to analyze best fit, while the forward model starts with the null model and goes to the full model. We will use both of them combined just for better analysis.
 
 ```{r,warning=FALSE,echo=FALSE,results=FALSE,include=FALSE}
 step.model <- stepAIC(x, direction = "both", trace = FALSE)
 summary(step.model)
 ```
 
-We notice that the Front/Backward Step-wise regression function also provided the same regression as what we originally thought it was with all the interactions dropped as well as the variable `visits`. Our final regression looks like:
+After running the model,we notice that the Front/Backward Step-wise regression function also provided the same regression as what we originally thought it was with all the interactions dropped as well as the variable `visits`. Our final regression looks like:
 
 $$Birth = Age + Weight + Factor(Smoke) + Factor(Pre) + Factor(Hyp) + \epsilon_t$$
 with the summary statistics being:
@@ -222,10 +221,10 @@ Residual deviance: 202.19  on 183  degrees of freedom
 AIC: 214.19
 \end{table}
 
-Comparing the last 3 regressions, we notice that this is the best fit model that we have tried so far. The reasons being that the AIC is at its lowest. ADD A BIT MORE ANALYSIS HERE!!!!
+Comparing the last 3 regressions, we notice that this is the best fit model that we have tried so far. The reasons being that the AIC is at its lowest of the 3. 
 
+Using this final regression, we will then try to approximate our results by making a test dataset which has all the same columns as the `Baby` dataset except for the column Birth. We will then compare our results to the real world data to see how accurate our model is. 
 
-Using this final regression, we will than try to approximate our results by making an test dataset which has all the same variables as the `Baby` dataset except for the response variable being Birth. We will than compare our results to the real world data to see how accurate our model is. 
 
 ```{r,warning=FALSE,echo=FALSE,results=FALSE,include=FALSE}
 test <- data.frame(
@@ -238,12 +237,12 @@ cool = lol == baby$birth
 length(cool[cool==TRUE])
 ```
 
-We made our column into an logical class where it displayed true if the prediction was equal to the Birth column in `Baby` and we found the length of the True which ended up being $\frac{141}{189} = 74.6\%$. This means our model accurately explains 74.6% of the data in the `Baby` dataset.
+We made our column into a logical class where it displayed true if the prediction was equal to the Birth column in `Baby` and we found the length of the True which ended up being $\frac{141}{189} = 74.6\%$. This means our model accurately explains 74.6% of the data in the `Baby` dataset.
 
 
 \circled{IV} \textbf{Conclusion}
 
-Seeing that our data accurately predicted 74.6% of the data in the dataset, we think that its an result of an pretty accurate and good model. It is possible to increase the validity and accuracy of this model maybe if we added transformations and of course other variables such as whether they attended college, if there parents smoked, etc. While our model works pretty well on this dataset, it remains to be seen if it can do the same on another dataset with different variables. Another reasoning behind the predictability of it being 74.6% is largely because of outside influences on people. Everyone is different and are not bound by the variables described in the dataset. Thus, no model can 100% accurately describe an dataset, thus describing the error term at the end of an regression, $\epsilon_t$.
+Seeing that our data accurately predicted 74.6% of the data in the dataset, we think that it's a result of a pretty accurate and good model. It is possible to increase the validity and accuracy of this model maybe if we added transformations and of course other variables such as whether they attended college, if their parents smoked, etc. While our model works pretty well on this dataset, it remains to be seen if it can do the same on another dataset with different variables. Another reasoning behind the predictability of it being 74.6% is largely because of outside influences on people. Everyone is different and is not bound by the variables described in the dataset. Thus, no model can 100% accurately describe a dataset, thus describing the error term at the end of a regression, $\epsilon_t$.
 
 
 \newpage
@@ -254,7 +253,8 @@ Seeing that our data accurately predicted 74.6% of the data in the dataset, we t
 \newpage
 \circled{I} \textbf{Introduction}
 
-Heart disease is one of the most common diseases which can lead to death. It is in fact an very serious disease and is an type of disease which starts off by having an buildup of plaque. This leads to the coronary arteries thus having to narrow, which limits the blood flow to the heart. Some symptoms of coronary artery disease can really range from no symptoms, to chest pain and even an heart attack depending on the person. Some treatment can help but ultimately there is no cure and would have to deal with for the rest of your life. In this paper, we are looking into an dataset called `ischemic` given to us by Professor Prabir Burman which contains 9 columns. The 9 columns are `cost`(the total cost of claims made by the subscriber), `age`(age of the subscriber), `gender`(gender of subscriber),`inter`(total number of interventions or procedures carried out),`drugs`(number of tracked drugs prescribed), `complications`(number of other complications that came from the heart treatment), `comorbidities` (number of other diseases that the subscriber had during the period), `duration` (number of days of duration of treatment condition), and `visits` (number of emergency room visits). We will be using this dataset to perform an poisson regression that will perform an data summary, goodness-of-fit and model selection to model the mean as an function of 8 other variables.
+Heart disease is one of the most common diseases which can lead to death. It is in fact a very serious disease and is a type of disease which starts off by having a buildup of plaque. This leads to the coronary arteries thus having to narrow, which limits the blood flow to the heart. Some symptoms of coronary artery disease can really range from no symptoms, to chest pain and even a heart attack depending on the person. Some treatment can help but ultimately there is no cure and would have to deal with for the rest of your life. In this paper, we are looking into a dataset called `ischemic` given to us by Professor Prabir Burman which contains 9 columns. The 9 columns are `cost`(the total cost of claims made by the subscriber), `age`(age of the subscriber), `gender`(gender of subscriber),`inter`(total number of interventions or procedures carried out),`drugs`(number of tracked drugs prescribed), `complications`(number of other complications that came from the heart treatment), `comorbidities` (number of other diseases that the subscriber had during the period), `duration` (number of days of duration of treatment condition), and `visits` (number of emergency room visits). We will be using this dataset to perform a poisson regression that will perform a data summary, goodness-of-fit and model selection to model the mean as a function of 8 other variables.
+
 
 \circled{II} \textbf{Materials and Methods}
 
