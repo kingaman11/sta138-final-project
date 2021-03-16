@@ -1,0 +1,304 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+\newpage
+\begin{center}
+\LARGE{Question 2: Ischemic Heart Disease}
+\end{center}
+
+\newpage
+\circled{I} \textbf{Introduction}
+
+Heart disease is one of the most common diseases which can lead to death. It is in fact an very serious disease and is an type of disease which starts off by having an buildup of plaque. This leads to the coronary arteries thus having to narrow, which limits the blood flow to the heart. Some symptoms of coronary artery disease can really range from no symptoms, to chest pain and even an heart attack depending on the person. Some treatment can help but ultimately there is no cure and would have to deal with for the rest of your life. In this paper, we are looking into an dataset called `ischemic` given to us by Professor Prabir Burman which contains 9 columns. The 9 columns are `cost`(the total cost of claims made by the subscriber), `age`(age of the subscriber), `gender`(gender of subscriber),`inter`(total number of interventions or procedures carried out),`drugs`(number of tracked drugs prescribed), `complications`(number of other complications that came from the heart treatment), `comorbidities` (number of other diseases that the subscriber had during the period), `duration` (number of days of duration of treatment condition), and `visits` (number of emergency room visits). We will be using this data set to perform a Poisson regression that will perform an data summary, goodness-of-fit and model selection to model the mean of visits as an function of 8 other variables.
+
+\circled{II} \textbf{Materials and Methods}
+
+```{r,warning=FALSE,echo=FALSE,results=FALSE,include=FALSE}
+
+#Question 2
+
+ischemic <- read_excel("ischemic.xlsx")
+
+```
+
+```{r,warning=TRUE,echo=FALSE,results=FALSE,message = FALSE,include=TRUE,fig.align="center",out.width="90%"}
+
+summary(ischemic)
+
+a = ischemic %>%
+  ggplot()+
+  geom_point(mapping = aes(x = age,y = cost,color = gender))+
+  labs(title = "Age vs Cost",subtitle = "Sub. vs Claims",x = "Age of subscriber",y = "Total cost of claims",color = 
+         "Gender",caption = "Graph B",shape = "Smoke")
+
+b = ischemic %>%
+  ggplot(aes(age, cost)) + 
+  geom_point()+
+  facet_grid(vars(gender))+
+  labs(title = "Age vs Cost",subtitle = "Seperated by gender",x = "Age of subscriber",y = "Total cost of claims",caption = "Graph 
+       B")
+
+a+b
+
+```
+
+```{r,warning=TRUE,echo=FALSE,results=FALSE,message = FALSE,include=TRUE,fig.align="center",out.width="90%"}
+
+fit_full = glm(visits ~  cost + age + gender + inter + drugs + complications + comorbidities + duration, data = ischemic, family = poisson)
+
+fit_reduced1=glm(visits ~  age + gender + inter + drugs + complications + comorbidities + duration, data = ischemic, family = poisson)
+
+G2=fit_reduced1$deviance-fit_full$deviance #df=1
+
+1-pchisq(G2,df=1) #keep cost
+
+fit_reduced2=glm(visits ~  cost + gender + inter + drugs + complications + comorbidities + duration, data = ischemic, family = poisson)
+
+G2=fit_reduced2$deviance-fit_full$deviance #df=1
+
+1-pchisq(G2,df=1) #keep age
+
+fit_reduced3=glm(visits ~  cost + age + inter + drugs + complications + comorbidities + duration, data = ischemic, family = poisson)
+
+G2=fit_reduced3$deviance-fit_full$deviance #df=1
+
+1-pchisq(G2,df=1) #keep gender
+
+fit_reduced4=glm(visits ~  cost + age + gender + drugs + complications + comorbidities + duration, data = ischemic, family = poisson)
+
+G2=fit_reduced4$deviance-fit_full$deviance #df=1
+
+1-pchisq(G2,df=1) #keep inter
+
+fit_reduced5=glm(visits ~  cost + age + gender + inter + complications + comorbidities + duration, data = ischemic, family = poisson)
+
+G2=fit_reduced5$deviance-fit_full$deviance #df=1
+
+1-pchisq(G2,df=1) #keep drugs
+
+fit_reduced6=glm(visits ~  cost + age + gender + inter + drugs + comorbidities + duration, data = ischemic, family = poisson)
+
+G2=fit_reduced6$deviance-fit_full$deviance #df=1
+
+1-pchisq(G2,df=1) #drop complications
+
+fit_reduced7=glm(visits ~  cost + age + gender + inter + drugs + complications + duration, data = ischemic, family = poisson)
+
+G2=fit_reduced7$deviance-fit_full$deviance #df=1
+
+1-pchisq(G2,df=1) #drop comorbidities
+
+fit_reduced8=glm(visits ~  cost + age + gender + inter + drugs + complications + comorbidities, data = ischemic, family = poisson)
+
+G2=fit_reduced8$deviance-fit_full$deviance #df=1
+
+1-pchisq(G2,df=1) #keep duration
+
+step(fit_full)
+
+summary(fit_full)
+
+plot(fit_full)
+
+resfull = residuals(fit_full, "pearson")
+
+hist(resfull, main = "Standardized Residuals Histogram for the Transformed Model", xlab = "Standardized Residuals")
+
+redmod = glm(visits ~  cost + age + gender + inter + drugs + duration, data = ischemic, family = poisson)
+
+summary(redmod)
+
+step(redmod)
+
+plot(redmod)
+
+resredmod = residuals(redmod, "pearson")
+
+hist(resredmod, main = "Standardized Residuals Histogram for the Transformed Model", xlab = "Standardized Residuals")
+
+```
+
+The full model that includes all predictor variables is:
+
+$log(\mu) = \beta_0 + \beta_1x_{complications} + \beta_2x_{comorbidities} + \beta_3x_{duration} + \beta_4x_{age} + \beta_5x_{gender} + \beta_6x_{cost} + \beta_7x_{drugs} + \beta_8x_{inter}$
+
+From the summary of the full model, we can see the estimated parameters and their relatively low standard errors, which results in the estimated regression function:
+
+$log(\hat\mu) = (4.994e-01) + (6.125e-02)x_{complications} - (8.999e-04)x_{comorbidities} + (3.529e-04)x_{duration} + (6.724e-03)x_{age} + (1.819e-01)x_{gender} + (1.495e-05)x_{cost} + (1.932e-01)x_{drugs} + (1.007e-02)x_{inter}$
+
+It makes sense to see that from our estimated regression function of the full model, the variable comorbidities (the number of other diseases that the subscriber had during the period) has a negative correlation with the average number of emergency room visits related to heart disease, as the subscriber may have visited the emergency room because of another disease unrelated to heart disease.
+
+Going by model selection using stepwise regression, we can see that the reduced model that results in the lowest AIC = 3268.1 and drop the variables complications and comorbidities:
+
+$log(\mu) = \beta_0 + \beta_3x_{duration} + \beta_4x_{age} + \beta_5x_{gender} + \beta_6x_{cost} + \beta_7x_{drugs} + \beta_8x_{inter}$
+
+From the summary of the reduced model, we can see the estimated parameters and their relatively low standard errors, which results in the estimated regression function:
+
+$log(\hat\mu) = (5.208e-01) + (3.453e-04)x_{duration} + (6.334e-03)x_{age} + (1.857e-01)x_{gender} + (1.493e-05)x_{cost} + (1.963e-01)x_{drugs} + (1.025e-02)x_{inter}$
+
+From both summary statistics and diagnostic plots for the transformed full model and transformed reduced model, we can see that there appears to be constant variance with few outliers, and a majority of the standardized residuals fall within +/- 3 standard deviations of 0.
+
+We will be using the likelihood ratio test to determine whether the variable $(x_{complications})$ should be dropped from the model. Here, $H_0: \beta_1 = 0$ and $H_1: \beta_1 \neq 0.$
+
+The likelihood-ratio test statistic where $G_2$ = {residual deviance of the reduced model} -  {residual deviance of the full model} =  1044.6 - 1043.6 =  with degrees of freedom = 781 - 780 = 1. Since the p-value, which is the area to the right of 0.05 under the $X^2_1$ curve, is about 0.3, which is larger than $\alpha$ = 0.05, we fail to reject the null hypothesis, and may drop the variable complications from the full model.
+
+We will again be using the likelihood ratio test to determine whether the variable $(x_{comorbidities})$ should be dropped from the model. Here, $H_0: \beta_2 = 0$ and $H_1: \beta_2 \neq 0.$
+
+The likelihood-ratio test statistic where $G_2$ = {residual deviance of the reduced model} -  {residual deviance of the full model} =  1043.7 - 1043.6 =  with degrees of freedom = 781 - 780 = 1. Since the p-value, which is the area to the right of 0.05 under the $X^2_1$ curve, is about 0.8, which is larger than $\alpha$ = 0.05, we fail to reject the null hypothesis, and may drop the variable comorbidities from the full model.
+
+We will again be using the likelihood ratio test to determine whether the variables $(x_{complications})$ and $(x_{comorbidities})$ should be dropped from the model. Here, $H_0: \beta_1 = \beta_2 = 0$ and $H_1: \beta_1 \neq 0 ~or~ \beta_2 \neq 0.$
+
+The likelihood-ratio test statistic where $G_2$ = {residual deviance of the reduced model} -  {residual deviance of the full model} = 1044.7 - 1043.6  =  with degrees of freedom = 781 - 779 = 2. Since the p-value, which is the area to the right of 0.05 under the $X^2_2$ curve, is about 0.57, which is larger than $\alpha$ = 0.05, we fail to reject the null hypothesis, and may drop both variables comorbidities and complications from the full model.
+
+We also performed the likelihood-ratio test on all other predictor variables to see if they should be dropped from the model. We saw that the p-values for all other reduced models was lower than $\alpha$ = 0.05, and therefore, we should choose the aforementioned model that dropped both variables complications and comorbidities.
+
+Dropping the variables complication and comorbidities does not make much sense for our model, since complications that arose during the heart disease treatment can lead a subscriber to visiting the emergency room, and symptoms from the number of other diseases that the subscriber had during the period can lead to the subscriber visiting the emergency room because of another disease (hence its negative correlation with the average number of visits to the emergency room related to heart disease). Because of this, we are transforming all of the predictor variables (except gender) by the square root to see if we can get a more accurate model to represent our data.
+
+```{r,warning=TRUE,echo=FALSE,results=FALSE,message = FALSE,include=TRUE,fig.align="center",out.width="90%"}
+
+newcost = sqrt(ischemic$cost)
+
+newage = sqrt(ischemic$age)
+
+newinter = sqrt(ischemic$inter)
+
+newdrug = sqrt(ischemic$drugs)
+
+newcomp = sqrt(ischemic$complications)
+
+newcomorb = sqrt(ischemic$comorbidities)
+
+newdur = sqrt(ischemic$duration)
+
+newmod = glm(visits ~  newcost + newage + gender + newinter + newdrug + newcomp + newcomorb + newdur, data = ischemic, family = poisson)
+
+fit_red1=glm(visits ~  newage + gender + newinter + newdrug + newcomp + newcomorb + newdur, data = ischemic, family = poisson)
+
+G2=fit_red1$deviance-newmod$deviance #df=1
+
+1-pchisq(G2,df=1) #keep cost
+
+fit_red2=glm(visits ~  newcost + gender + newinter + newdrug + newcomp + newcomorb + newdur, data = ischemic, family = poisson)
+
+G2=fit_red2$deviance-newmod$deviance #df=1
+
+1-pchisq(G2,df=1) #keep age
+
+fit_red3=glm(visits ~  newcost + newage + newinter + newdrug + newcomp + newcomorb + newdur, data = ischemic, family = poisson)
+
+G2=fit_red3$deviance-newmod$deviance #df=1
+
+1-pchisq(G2,df=1) #keep gender
+
+fit_red4=glm(visits ~  newcost + newage + gender + newdrug + newcomp + newcomorb + newdur, data = ischemic, family = poisson)
+
+G2=fit_red4$deviance-newmod$deviance #df=1
+
+1-pchisq(G2,df=1) #drop inter
+
+fit_red5=glm(visits ~  newcost + newage + gender + newinter + newcomp + newcomorb + newdur, data = ischemic, family = poisson)
+
+G2=fit_red5$deviance-newmod$deviance #df=1
+
+1-pchisq(G2,df=1) #keep drugs
+
+fit_red6=glm(visits ~  newcost + newage + gender + newinter + newdrug + newcomorb + newdur, data = ischemic, family = poisson)
+
+G2=fit_red6$deviance-newmod$deviance #df=1
+
+1-pchisq(G2,df=1) #drop complications
+
+fit_red7=glm(visits ~  newcost + newage + gender + newinter + newdrug + newcomp + newdur, data = ischemic, family = poisson)
+
+G2=fit_red7$deviance-newmod$deviance #df=1
+
+1-pchisq(G2,df=1) #drop comorbidities
+
+fit_red8=glm(visits ~  newcost + newage + gender + newinter + newdrug + newcomp + newcomorb, data = ischemic, family = poisson)
+
+G2=fit_red8$deviance-newmod$deviance #df=1
+
+1-pchisq(G2,df=1) #keep duration
+
+redmod2 = glm(visits ~  newcost + newage + gender + newdrug + newcomp + newcomorb + newdur, data = ischemic, family = poisson)
+
+redmod3 = glm(visits ~  newcost + newage + gender + newdrug + newdur, data = ischemic, family = poisson)
+
+summary(newmod)
+
+summary(redmod2)
+
+summary(redmod3)
+
+step(newmod)
+
+step(redmod2)
+
+step(redmod3)
+
+plot(newmod)
+
+resnewmod = residuals(newmod, "pearson")
+
+hist(resnewmod, main = "Standardized Residuals Histogram for the Transformed Model", xlab = "Standardized Residuals")
+
+plot(redmod2)
+
+resmod2 = residuals(redmod2, "pearson")
+
+hist(resmod2, main = "Standardized Residuals Histogram for the Reduced Transformed Model", xlab = "Standardized Residuals")
+
+redmod4 = glm(visits ~  newcost + newage + gender + newdrug + newcomp + newcomorb + newdur + inter, data = ischemic, family = poisson)
+
+step(redmod4)
+
+```
+
+The full model that includes all predictor variables after being transformed by square root (except gender) is:
+
+$log(\mu) = \beta_0 + \beta_1x_{newcomp} + \beta_2x_{newcomorb} + \beta_3x_{newdur} + \beta_4x_{newage} + \beta_5x_{gender} + \beta_6x_{newcost} + \beta_7x_{newdrug} + \beta_8x_{newinter}$
+
+From the summary of the full transformed model, we can see the estimated parameters and their relatively low standard errors, which results in the estimated regression function:
+
+$log(\hat\mu) = (-0.0370823) + (0.1006946)x_{newcomp} - (0.0243875)x_{newcomorb} + (0.0083841)x_{newdur} + (0.1026150)x_{newage} + (0.1724272)x_{gender} + (0.0039905)x_{newcost} + (0.4195931)x_{newdrug} + (0.0159633)x_{newinter}$
+
+Going by model selection using stepwise regression, we can see that the reduced model that results in the lowest AIC = 3217.91 is when we transform the variables by square root (except for gender) and drop the variable inter:
+
+$log(\mu) = \beta_0 + \beta_1x_{newcomp} + \beta_2x_{newcomorb} + \beta_3x_{newdur} + \beta_4x_{newage} + \beta_5x_{gender} + \beta_6x_{newcost} + \beta_7x_{newdrug}$
+
+From the summary of the reduced transformed model, we can see the estimated parameters and their relatively low standard errors, which results in the estimated regression function:
+
+$log(\hat\mu) = (-0.0202454) + (0.1026728)x_{newcomp} - (0.0249671)x_{newcomorb} + (0.0088116)x_{newdur} + (0.1020661)x_{newage} + (0.1742938)x_{gender} + (0.0042954)x_{newcost} + (0.4221196)x_{newdrug}$
+
+It makes sense to see that from our estimated regression function of the full transformed model and reduced transformed model, the transformed by square root variable comorbidities (the number of other diseases that the subscriber had during the period) has a negative correlation with the average number of emergency room visits related to heart disease, as the subscriber may have visited the emergency room because of another disease unrelated to heart disease. From both summary statistics and diagnostic plots for the transformed full model and transformed reduced model, we can see that there appears to be constant variance with few outliers, and a majority of the standardized residuals fall within +/- 3 standard deviations of 0.
+
+We will be using the likelihood-ratio test to determine whether the variable inter transformed by the square root $(x_{newinter})$ should be dropped from the model. Here, $H_0: \beta_8 = 0$ and $H_1: \beta_8 \neq 0.$
+
+The likelihood-ratio test statistic where $G_2$ = {residual deviance of the reduced model} -  {residual deviance of the full model} = 992.5 - 992.01 = 0.49 with degrees of freedom = 780 - 779 = 1. Since the p-value, which is the area to the right of .05 under the $X^2_1$ curve, is about 0.48, which is larger than $\alpha$ = 0.05, we fail to reject the null hypothesis, and may drop newinter from the full (transformed) model.
+
+We also performed the likelihood-ratio test on all other predictor variables transformed by the square root (except gender) to see if they should be dropped from the model. We saw that although the p-values for 2 other reduced models (one that did not include the variable comorbidities and another that did not include the variable complications) were greater than $\alpha$ = 0.05, these models still resulted in a higher AIC (with the lowest being 3218.2 by dropping variables newcomorb and newcomp in addition to dropping newinter from the model), and therefore, we should choose the aforementioned model that solely dropped the transformed variable inter.
+
+\circled{III} \textbf{Results}
+
+After the model's transformation by square root, we can see that the total number of interventions or procedures carried out (inter) has no impact on the model, as the p-value of the model not including this variable is greater than $\alpha$ = 0.05, so we can drop it from the model.
+
+We also wanted to see if adding the untransformed variable inter to the fully transformed reduced model would result in a lower AIC and could be added to the model, but it resulted in having a slightly higher AIC = 3218.8. Because the reduced model after transforming all of the predictor variables results in the lowest AIC, we will use this reduced transformed model to represent the mean of number of emergency room visits as a function of these 7 other variables.
+
+Dropping the transformed variable inter makes sense because the total number of procedures or interventions carried out as these tasks are carried out after the subscriber's visit to the emergency room and are done either in the emergency room or in a different part of the hospital, A.K.A. these tasks happen as a result of the subscriber's visit to the emergency room, and do not affect the number of emergency room visits.
+
+\circled{IV} \textbf{Conclusion}
+
+In conclusion, our final model had the best fit to model the average number of emergency room visits related to heart disease as a function of 7 other variables (all transformed by square root): cost (total cost of claims made by subscriber in dollars), age (age of subscriber in years), gender of subscriber (1 = male, 0 = otherwise), drugs (number of tracked drugs perscribed), complications (number of other complications that arose during the heart disease treatment), comorbidities (number of other diseasese that the subscriber had during the period), duration (number of days of duration of treatment condition):
+
+$log(\hat\mu) = (-0.0202454) + (0.1026728)x_{newcomp} - (0.0249671)x_{newcomorb} + (0.0088116)x_{newdur} + (0.1020661)x_{newage} + (0.1742938)x_{gender} + (0.0042954)x_{newcost} + (0.4221196)x_{newdrug}$
+
+This model resulted in the lowest AIC, which is ideal for model selection using stepwise regression. We also saw from doing a likelihood-ratio statistic test that we could drop the transformed variable inter from the model, as it had no impact on the transformed reduced model. As mentioned above, dropping the transformed variable inter makes sense because the average number of emergency room visits is not affected by the total number of procedures or interventions carried out as these tasks are carried out after the subscriber's visit to the emergency room and are done either in the emergency room or in a different part of the hospital, A.K.A. these tasks happen as a result of the subscriber's visit to the emergency room, and do not affect the number of emergency room visits.
+
+\newpage
+
+\circled{V} \center{\textbf{Code Appendix}}
+
+```{r, ref.label=knitr::all_labels(),echo=TRUE,eval=FALSE}
+```
