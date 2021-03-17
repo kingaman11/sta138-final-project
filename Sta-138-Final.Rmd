@@ -559,7 +559,7 @@ This model resulted in the lowest AIC, which is ideal for model selection using 
 
 \newpage
 
-\center{\textbf{Graphs of Residuals of different GLM models }}
+\textbf{Graphs of Residuals of different GLM models: }
 
 ```{r,warning=TRUE,echo=FALSE,results=FALSE,message = FALSE,include=TRUE,fig.align="center",out.width="70%"}
 
@@ -595,7 +595,7 @@ hist(resmod2, main = "Standardized Residual:Reduced Transformed", xlab = "Standa
 ```
 
 \newpage
-\circled{V} \center{\textbf{Code Appendix}}
+\circled{V}\textbf{Code Appendix}
 ```{r, ref.label=knitr::all_labels(),echo=TRUE,eval=FALSE}
 ```
 
